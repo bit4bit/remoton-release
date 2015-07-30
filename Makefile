@@ -42,7 +42,7 @@ remoton-client-desktop-x86_64-deb:
 	fpm -s dir -t deb -n $@ -v 0.0.1 $(GENERAL) $(PACKAGE_DESKTOP_DEPS) $@=/usr/bin/$@
 
 remoton-client-desktop-win32.exe: deps-win32
-	PKG_CONFIG_PATH=$(PWD)/vendor/windows/gtk+-2.0-win32/lib/pkgconfig CC=$(WIN32_CC) CGO_CFLAGS=$(pkg-config --cflags gtk+-2.0) CGO_LDFLAGS=$(pkg-config --libs gtk+-2.0) CGO_ENABLED=1 GOOS=windows GOARCH=386 go build -o $@ github.com/bit4bit/remoton/cmd/remoton-client-desktop
+	PKG_CONFIG_PATH=$(PWD)/vendor/windows/gtk+-2.0-win32/lib/pkgconfig CC=$(WIN32_CC) CGO_CFLAGS=$(pkg-config --cflags gtk+-2.0) CGO_LDFLAGS=$(pkg-config --libs gtk+-2.0) CGO_ENABLED=1 GOOS=windows GOARCH=386 go build -o $@ -ldflags -H=windowsgui github.com/bit4bit/remoton/cmd/remoton-client-desktop
 
 remoton-client-desktop-win32-runtime: remoton-client-desktop-win32.exe
 	mkdir -p release-$@
@@ -74,7 +74,7 @@ remoton-client-desktop-win32-bundle-setup: deps-bundle deps-win32 remoton-client
 	rm -rf installer-win32
 
 remoton-client-desktop-win64.exe: deps-win64
-	PKG_CONFIG_PATH=$(PWD)/vendor/windows/gtk+-2.0-win64/lib/pkgconfig CC=$(WIN64_CC) CGO_CFLAGS=$(pkg-config --cflags gtk+-2.0) CGO_LDFLAGS=$(pkg-config --libs gtk+-2.0) CGO_ENABLED=1 GOOS=windows GOARCH=amd64 go build -o $@ github.com/bit4bit/remoton/cmd/remoton-client-desktop
+	PKG_CONFIG_PATH=$(PWD)/vendor/windows/gtk+-2.0-win64/lib/pkgconfig CC=$(WIN64_CC) CGO_CFLAGS=$(pkg-config --cflags gtk+-2.0) CGO_LDFLAGS=$(pkg-config --libs gtk+-2.0) CGO_ENABLED=1 GOOS=windows GOARCH=amd64 go build -o $@ -ldflags -H=windowsgui github.com/bit4bit/remoton/cmd/remoton-client-desktop
 
 remoton-client-desktop-win64-runtime: remoton-client-desktop-win64.exe
 	mkdir -p release-$@
@@ -122,7 +122,7 @@ remoton-support-desktop-deb:
 	rm $@
 
 remoton-support-desktop-win32.exe: deps-win32
-	PKG_CONFIG_PATH=$(PWD)/vendor/windows/gtk+-2.0-win32/lib/pkgconfig CC=$(WIN32_CC) CGO_CFLAGS=$(pkg-config --cflags gtk+-2.0) CGO_LDFLAGS=$(pkg-config --libs gtk+-2.0) CGO_ENABLED=1 GOOS=windows GOARCH=386 go build -o $@ github.com/bit4bit/remoton/cmd/remoton-support-desktop
+	PKG_CONFIG_PATH=$(PWD)/vendor/windows/gtk+-2.0-win32/lib/pkgconfig CC=$(WIN32_CC) CGO_CFLAGS=$(pkg-config --cflags gtk+-2.0) CGO_LDFLAGS=$(pkg-config --libs gtk+-2.0) CGO_ENABLED=1 GOOS=windows GOARCH=386 go build -o $@ -ldflags -H=windowsgui github.com/bit4bit/remoton/cmd/remoton-support-desktop
 
 remoton-support-desktop-win32-runtime: remoton-support-desktop-win32.exe
 	mkdir -p release-$@
@@ -154,7 +154,7 @@ remoton-support-desktop-win32-bundle-setup: deps-bundle deps-win32 remoton-suppo
 	rm -rf support-setup-win32
 
 remoton-support-desktop-win64.exe: deps-win64
-	PKG_CONFIG_PATH=$(PWD)/vendor/windows/gtk+-2.0-win64/lib/pkgconfig CC=$(WIN64_CC) CGO_CFLAGS=$(pkg-config --cflags gtk+-2.0) CGO_LDFLAGS=$(pkg-config --libs gtk+-2.0) CGO_ENABLED=1 GOOS=windows GOARCH=amd64 go build -o $@ github.com/bit4bit/remoton/cmd/remoton-support-desktop
+	PKG_CONFIG_PATH=$(PWD)/vendor/windows/gtk+-2.0-win64/lib/pkgconfig CC=$(WIN64_CC) CGO_CFLAGS=$(pkg-config --cflags gtk+-2.0) CGO_LDFLAGS=$(pkg-config --libs gtk+-2.0) CGO_ENABLED=1 GOOS=windows GOARCH=amd64 go build -o $@ -H=windowsgui github.com/bit4bit/remoton/cmd/remoton-support-desktop
 
 remoton-support-desktop-win64-runtime: remoton-support-desktop-win64.exe
 	mkdir -p release-$@
