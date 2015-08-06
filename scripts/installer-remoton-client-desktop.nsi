@@ -56,11 +56,12 @@ Section "Xpra" SEC01
     MessageBox MB_OK "Download Xpra failed: $R0"
     Quit
   !endif
-  ExecWait '"$INSTDIR\xpra_setup.exe" /SP- /SILENT'
+  ExecWait '"$INSTDIR\xpra_setup.exe" /SP- /SILENT /DIR="$INSTDIR\xpra" /NOICONS /LANG=es'
 SectionEnd
 
 Section "Gtk 2 Runtime" SEC02
   File "freetype6.dll"
+  File "intl.dll"
   File "libasprintf-0.dll"
   File "libatk-1.0-0.dll"
   File "libcairo-2.dll"
@@ -68,32 +69,27 @@ Section "Gtk 2 Runtime" SEC02
   File "libcairo-script-interpreter-2.dll"
   File "libexpat-1.dll"
   File "libfontconfig-1.dll"
-  File "libfreetype-6.dll"
   File "libgailutil-18.dll"
+  File "libgcc_s_dw2-1.dll"
+  File "libgdk_pixbuf-2.0-0.dll"
+  File "libgdk-win32-2.0-0.dll"
   File "libgio-2.0-0.dll"
+  File "libglib-2.0-0.dll"
   File "libgmodule-2.0-0.dll"
   File "libgobject-2.0-0.dll"
-  File "libintl-8.dll"
-  File "libpangocairo-1.0-0.dll"
+  File "libgthread-2.0-0.dll"
+  File "libgtk-win32-2.0-0.dll"
   File "libpango-1.0-0.dll"
   File "libpangocairo-1.0-0.dll"
   File "libpangoft2-1.0-0.dll"
   File "libpangowin32-1.0-0.dll"
   File "libpng14-14.dll"
-  
-  
-  File "libgthread-2.0-0.dll"
-  File "libgobject-2.0-0.dll"
-
-  File "libgdk-win32-2.0-0.dll"
-  File "libgtk-win32-2.0-0.dll"
-
-  File "libgdk_pixbuf-2.0-0.dll"
-  File "libglib-2.0-0.dll"
+  File "zlib1.dll"
 SectionEnd
 
 Section
   WriteUninstaller "$INSTDIR\uninstaller.exe"
+  File "icon.ico"
   File "remoton-client-desktop.exe"
   CreateShortCut "$SMPROGRAMS\remonto-client-desktop.lnk" "$INSTDIR\remoton-client-desktop.exe"
 SectionEnd

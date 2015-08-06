@@ -1,5 +1,5 @@
-XPRA_VERSION = "0.14.10"
-XPRA_REVISION = "r7980"
+XPRA_VERSION = "0.15.4"
+XPRA_REVISION = "r10209"
 
 PRODUCT_VERSION="0.0.1"
 PACKAGE_DESKTOP_DEPS=-d "libgtk2.0-0 (>= 2.24.0)" -d "xpra (= $(XPRA_VERSION)-1)"
@@ -11,17 +11,17 @@ remoton-src:
 	go get github.com/bit4bit/remoton
 
 deps-bundle:
-	wget -c "https://www.xpra.org/dists/windows/Xpra_Setup_$(XPRA_VERSION)-$(XPRA_REVISION).exe" -O vendor/windows/xpra_setup.exe
+#	wget -c "https://www.xpra.org/dists/windows/Xpra_Setup_$(XPRA_VERSION)-$(XPRA_REVISION).exe" -O vendor/windows/xpra_setup.exe
 
 deps-win32:
-	wget -c http://ftp.gnome.org/pub/gnome/binaries/win32/gtk+/2.24/gtk+-bundle_2.24.10-20120208_win32.zip -O vendor/windows/gtk+-2.0-win32.zip
+#	wget -c http://ftp.gnome.org/pub/gnome/binaries/win32/gtk+/2.24/gtk+-bundle_2.24.10-20120208_win32.zip -O vendor/windows/gtk+-2.0-win32.zip
 	unzip -d vendor/windows/gtk+-2.0-win32 -u vendor/windows/gtk+-2.0-win32.zip
 	bash fix_pkg.sh windows/gtk+-2.0-win32
 
-deps-win64:
-	wget -c http://ftp.gnome.org/pub/gnome/binaries/win64/gtk+/2.22/gtk+-bundle_2.22.1-20101229_win64.zip -O vendor/windows/gtk+-2.0-win64.zip
-	unzip -d vendor/windows/gtk+-2.0-win64 -u vendor/windows/gtk+-2.0-win64.zip
-	bash fix_pkg.sh windows/gtk+-2.0-win64
+deps-win64exp:
+#	wget -c http://ftp.gnome.org/pub/gnome/binaries/win64exp/gtk+/2.22/gtk+-bundle_2.22.1-20101229_win64exp.zip -O vendor/windows/gtk+-2.0-win64exp.zip
+	unzip -d vendor/windows/gtk+-2.0-win64exp -u vendor/windows/gtk+-2.0-win64exp.zip
+	bash fix_pkg.sh windows/gtk+-2.0-win64exp
 
 remoton-client-desktop:
 	go build -o $@ github.com/bit4bit/remoton/cmd/remoton-client-desktop
@@ -36,6 +36,7 @@ remoton-client-desktop-x86_64:
 remoton-client-desktop-deb:
 	go build -o $@ github.com/bit4bit/remoton/cmd/remoton-client-desktop
 	fpm -s dir -t deb -n $@ -v 0.0.1 $(GENERAL) $(PACKAGE_DESKTOP_DEPS) $@=/usr/bin/$@
+	rm $@
 
 remoton-client-desktop-x86_64-deb:
 	GOOS=linux GOARCH=amd64 go build -o $@ github.com/bit4bit/remoton/cmd/remoton-client-desktop
@@ -73,37 +74,37 @@ remoton-client-desktop-win32-bundle-setup: deps-bundle deps-win32 remoton-client
 	cp installer-win32/installer.exe ./$@.exe
 	rm -rf installer-win32
 
-remoton-client-desktop-win64.exe: deps-win64
-	PKG_CONFIG_PATH=$(PWD)/vendor/windows/gtk+-2.0-win64/lib/pkgconfig CC=$(WIN64_CC) CGO_CFLAGS=$(pkg-config --cflags gtk+-2.0) CGO_LDFLAGS=$(pkg-config --libs gtk+-2.0) CGO_ENABLED=1 GOOS=windows GOARCH=amd64 go build -o $@ -ldflags -H=windowsgui github.com/bit4bit/remoton/cmd/remoton-client-desktop
+remoton-client-desktop-win64exp.exe: deps-win64exp
+	PKG_CONFIG_PATH=$(PWD)/vendor/windows/gtk+-2.0-win64exp/lib/pkgconfig CC=$(WIN64EXP_CC) CGO_CFLAGS=$(pkg-config --cflags gtk+-2.0) CGO_LDFLAGS=$(pkg-config --libs gtk+-2.0) CGO_ENABLED=1 GOOS=windows GOARCH=amd64 go build -o $@ -ldflags -H=windowsgui github.com/bit4bit/remoton/cmd/remoton-client-desktop
 
-remoton-client-desktop-win64-runtime: remoton-client-desktop-win64.exe
+remoton-client-desktop-win64exp-runtime: remoton-client-desktop-win64exp.exe
 	mkdir -p release-$@
-	cp remoton-client-desktop-win64.exe release-$@/
-	cp vendor/windows/gtk+-2.0-win64/bin/*.dll release-$@
+	cp remoton-client-desktop-win64exp.exe release-$@/
+	cp vendor/windows/gtk+-2.0-win64exp/bin/*.dll release-$@
 	zip -r $@.zip release-$@/*
 	rm -rf release-$@
 	rm -f $@
 
-remoton-client-desktop-win64-setup: deps-win64 remoton-client-desktop-win64.exe
-	mkdir -p installer-win64
-	cp vendor/windows/gtk+-2.0-win64/bin/*.dll installer-win64/	
-	cp remoton-client-desktop-win64.exe installer-win64/remoton-client-desktop.exe
-	cp scripts/installer-remoton-client-desktop.nsi installer-win64/
-	cp res/icon.ico installer-win64/
-	wine "C:\Program Files\NSIS\makensis.exe" /DPRODUCT_VERSION=$(PRODUCT_VERSION) /DXPRA_VERSION=$(XPRA_VERSION) /DXPRA_REVISION=$(XPRA_REVISION) ./installer-win64/installer-remoton-client-desktop.nsi
-	cp installer-win64/installer.exe ./$@.exe
-	rm -rf installer-win64
+remoton-client-desktop-win64exp-setup: deps-win64exp remoton-client-desktop-win64exp.exe
+	mkdir -p installer-win64exp
+	cp vendor/windows/gtk+-2.0-win64exp/bin/*.dll installer-win64exp/	
+	cp remoton-client-desktop-win64exp.exe installer-win64exp/remoton-client-desktop.exe
+	cp scripts/installer-remoton-client-desktop.nsi installer-win64exp/
+	cp res/icon.ico installer-win64exp/
+	wine "C:\Program Files\NSIS\makensis.exe" /DPRODUCT_VERSION=$(PRODUCT_VERSION) /DXPRA_VERSION=$(XPRA_VERSION) /DXPRA_REVISION=$(XPRA_REVISION) ./installer-win64exp/installer-remoton-client-desktop.nsi
+	cp installer-win64exp/installer.exe ./$@.exe
+	rm -rf installer-win64exp
 
-remoton-client-desktop-win64-bundle-setup: deps-bundle deps-win64 remoton-client-desktop-win64.exe
-	mkdir -p installer-win64
-	cp vendor/windows/xpra_setup.exe installer-win64/
-	cp vendor/windows/gtk+-2.0-win64/bin/*.dll installer-win64
-	cp remoton-client-desktop-win64.exe installer-win64/remoton-client-desktop.exe
-	cp scripts/installer-remoton-client-desktop.nsi installer-win64/
-	cp res/icon.ico installer-win64/
-	wine "C:\Program Files\NSIS\makensis.exe" /DX64="true" /DBUNDLE="true" /DPRODUCT_VERSION=$(PRODUCT_VERSION) /DXPRA_VERSION=$(XPRA_VERSION) /DXPRA_REVISION=$(XPRA_REVISION) ./installer-win64/installer-remoton-client-desktop.nsi
-	cp installer-win64/installer.exe ./$@.exe
-	rm -rf installer-win64
+remoton-client-desktop-win64exp-bundle-setup: deps-bundle deps-win64exp remoton-client-desktop-win64exp.exe
+	mkdir -p installer-win64exp
+	cp vendor/windows/xpra_setup.exe installer-win64exp/
+	cp vendor/windows/gtk+-2.0-win64exp/bin/*.dll installer-win64exp
+	cp remoton-client-desktop-win64exp.exe installer-win64exp/remoton-client-desktop.exe
+	cp scripts/installer-remoton-client-desktop.nsi installer-win64exp/
+	cp res/icon.ico installer-win64exp/
+	wine "C:\Program Files\NSIS\makensis.exe" /DX64="true" /DBUNDLE="true" /DPRODUCT_VERSION=$(PRODUCT_VERSION) /DXPRA_VERSION=$(XPRA_VERSION) /DXPRA_REVISION=$(XPRA_REVISION) ./installer-win64exp/installer-remoton-client-desktop.nsi
+	cp installer-win64exp/installer.exe ./$@.exe
+	rm -rf installer-win64exp
 
 
 remoton-support-desktop:
@@ -153,37 +154,37 @@ remoton-support-desktop-win32-bundle-setup: deps-bundle deps-win32 remoton-suppo
 	cp support-setup-win32/installer.exe ./$@.exe
 	rm -rf support-setup-win32
 
-remoton-support-desktop-win64.exe: deps-win64
-	PKG_CONFIG_PATH=$(PWD)/vendor/windows/gtk+-2.0-win64/lib/pkgconfig CC=$(WIN64_CC) CGO_CFLAGS=$(pkg-config --cflags gtk+-2.0) CGO_LDFLAGS=$(pkg-config --libs gtk+-2.0) CGO_ENABLED=1 GOOS=windows GOARCH=amd64 go build -o $@ -ldflags -H=windowsgui github.com/bit4bit/remoton/cmd/remoton-support-desktop
+remoton-support-desktop-win64exp.exe: deps-win64exp
+	PKG_CONFIG_PATH=$(PWD)/vendor/windows/gtk+-2.0-win64exp/lib/pkgconfig CC=$(WIN64EXP_CC) CGO_CFLAGS=$(pkg-config --cflags gtk+-2.0) CGO_LDFLAGS=$(pkg-config --libs gtk+-2.0) CGO_ENABLED=1 GOOS=windows GOARCH=amd64 go build -o $@ -ldflags -H=windowsgui github.com/bit4bit/remoton/cmd/remoton-support-desktop
 
-remoton-support-desktop-win64-runtime: remoton-support-desktop-win64.exe
+remoton-support-desktop-win64exp-runtime: remoton-support-desktop-win64exp.exe
 	mkdir -p release-$@
-	cp remoton-support-desktop-win64.exe release-$@/
-	cp vendor/windows/gtk+-2.0-win64/bin/*.dll release-$@/
+	cp remoton-support-desktop-win64exp.exe release-$@/
+	cp vendor/windows/gtk+-2.0-win64exp/bin/*.dll release-$@/
 	zip -r $@.zip release-$@/*
 	rm -rf release-$@
 	rm -f $@
 
-remoton-support-desktop-win64-setup: remoton-support-desktop-win64.exe
-	mkdir -p support-setup-win64
-	cp vendor/windows/gtk+-2.0-win64/bin/*.dll support-setup-win64/
-	cp remoton-support-desktop-win64.exe support-setup-win64/remoton-support-desktop.exe
-	cp scripts/installer-remoton-support-desktop.nsi support-setup-win64/installer.nsi
-	cp res/icon.ico support-setup-win64/
-	wine "C:\Program Files\NSIS\makensis.exe" /DX64="true" /DPRODUCT_VERSION=$(PRODUCT_VERSION) /DXPRA_VERSION=$(XPRA_VERSION) /DXPRA_REVISION=$(XPRA_REVISION) ./support-setup-win64/installer.nsi
-	cp support-setup-win64/installer.exe ./$@.exe
-	rm -rf support-setup-win64
+remoton-support-desktop-win64exp-setup: remoton-support-desktop-win64exp.exe
+	mkdir -p support-setup-win64exp
+	cp vendor/windows/gtk+-2.0-win64exp/bin/*.dll support-setup-win64exp/
+	cp remoton-support-desktop-win64exp.exe support-setup-win64exp/remoton-support-desktop.exe
+	cp scripts/installer-remoton-support-desktop.nsi support-setup-win64exp/installer.nsi
+	cp res/icon.ico support-setup-win64exp/
+	wine "C:\Program Files\NSIS\makensis.exe" /DX64="true" /DPRODUCT_VERSION=$(PRODUCT_VERSION) /DXPRA_VERSION=$(XPRA_VERSION) /DXPRA_REVISION=$(XPRA_REVISION) ./support-setup-win64exp/installer.nsi
+	cp support-setup-win64exp/installer.exe ./$@.exe
+	rm -rf support-setup-win64exp
 
-remoton-support-desktop-win64-bundle-setup: deps-bundle remoton-support-desktop-win64.exe
-	mkdir -p support-setup-win64
-	cp vendor/windows/xpra_setup.exe support-setup-win64/
-	cp vendor/windows/gtk+-2.0-win64/bin/*.dll support-setup-win64/
-	cp remoton-support-desktop-win64.exe support-setup-win64/remoton-support-desktop.exe
-	cp res/icon.ico support-setup-win64/
-	cp scripts/installer-remoton-support-desktop.nsi support-setup-win64/installer.nsi
-	wine "C:\Program Files\NSIS\makensis.exe" /DBUNDLE="true" /DX64="true" /DPRODUCT_VERSION=$(PRODUCT_VERSION) /DXPRA_VERSION=$(XPRA_VERSION) /DXPRA_REVISION=$(XPRA_REVISION) ./support-setup-win64/installer.nsi
-	cp support-setup-win64/installer.exe ./$@.exe
-	rm -rf support-setup-win64
+remoton-support-desktop-win64exp-bundle-setup: deps-bundle remoton-support-desktop-win64exp.exe
+	mkdir -p support-setup-win64exp
+	cp vendor/windows/xpra_setup.exe support-setup-win64exp/
+	cp vendor/windows/gtk+-2.0-win64exp/bin/*.dll support-setup-win64exp/
+	cp remoton-support-desktop-win64exp.exe support-setup-win64exp/remoton-support-desktop.exe
+	cp res/icon.ico support-setup-win64exp/
+	cp scripts/installer-remoton-support-desktop.nsi support-setup-win64exp/installer.nsi
+	wine "C:\Program Files\NSIS\makensis.exe" /DBUNDLE="true" /DX64="true" /DPRODUCT_VERSION=$(PRODUCT_VERSION) /DXPRA_VERSION=$(XPRA_VERSION) /DXPRA_REVISION=$(XPRA_REVISION) ./support-setup-win64exp/installer.nsi
+	cp support-setup-win64exp/installer.exe ./$@.exe
+	rm -rf support-setup-win64exp
 
 remoton-server:
 	go build -o $@ github.com/bit4bit/remoton/cmd/remoton-server
@@ -209,22 +210,22 @@ remoton-server-win32-runtime: remoton-server-win32.exe
 	zip $@.zip remoton-server-win32.exe
 	rm remoton-server-win32.exe
 
-remoton-server-win64.exe:
+remoton-server-win64exp.exe:
 	GOOS=windows GOARCH=amd64 go build -o $@ github.com/bit4bit/remoton/cmd/remoton-server
 
-remoton-server-win64-runtime: remoton-server-win64.exe
-	zip $@.zip remoton-server-win64.exe
-	rm remoton-server-win64.exe
+remoton-server-win64exp-runtime: remoton-server-win64exp.exe
+	zip $@.zip remoton-server-win64exp.exe
+	rm remoton-server-win64exp.exe
 
 
 
 all-win32: remoton-client-desktop-win32-runtime remoton-client-desktop-win32-setup remoton-client-desktop-win32-bundle-setup remoton-support-desktop-win32-runtime remoton-support-desktop-win32-setup remoton-support-desktop-win32-bundle-setup remoton-server-win32-runtime
 
-all-win64: remoton-client-desktop-win64-runtime remoton-client-desktop-win64-setup remoton-client-desktop-win64-bundle-setup remoton-support-desktop-win64-runtime remoton-support-desktop-win64-setup remoton-support-desktop-win64-bundle-setup remoton-server-win64-runtime
+all-win64exp: remoton-client-desktop-win64exp-runtime remoton-client-desktop-win64exp-setup remoton-client-desktop-win64exp-bundle-setup remoton-support-desktop-win64exp-runtime remoton-support-desktop-win64exp-setup remoton-support-desktop-win64exp-bundle-setup remoton-server-win64exp-runtime
 
 all-gnu: remoton-client-desktop-deb remoton-support-desktop-deb remoton-server-deb
 
-all: all-gnu all-win32 all-win64
+all: all-gnu all-win32 all-win64exp
 
 clean:
 	go clean github.com/bit4bit/remoton/cmd/...
