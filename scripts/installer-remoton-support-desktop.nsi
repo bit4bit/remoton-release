@@ -1,5 +1,14 @@
 !define PRODUCT_NAME "remoton-support-desktop"
 
+!define DESCRIPTION "Support desktop"
+!define VERSIONMAJOR 0
+!define VERSIONMINOR 1
+!define VERSIONBUILD 1
+
+!define HELPURL "http://github.com/bit4bit"
+!define UPDATEURL "http:/github.com/bit4bit/remoton/releases"
+!define ABOUTURL "http://github.com/bit4bit"
+
 
 SetCompressor lzma
  
@@ -17,6 +26,7 @@ SetCompressor lzma
 
 ; Welcome page
 !insertmacro MUI_PAGE_WELCOME
+!insertmacro MUI_PAGE_LICENSE LICENSE
 ; Components page
 !insertmacro MUI_PAGE_COMPONENTS
 ; Instfiles page
@@ -59,7 +69,9 @@ Section "Xpra" SEC01
   ExecWait '"$INSTDIR\xpra_setup.exe" /SP- /SILENT /DIR="$INSTDIR\xpra" /NOICONS /LANG=es'
   SectionEnd
 
-Section "Gtk 2 Runtime" SEC02
+Section
+  WriteUninstaller "$INSTDIR\uninstaller.exe"
+  #GTK
   File "freetype6.dll"
   File "intl.dll"
   File "libasprintf-0.dll"
@@ -85,21 +97,43 @@ Section "Gtk 2 Runtime" SEC02
   File "libpangowin32-1.0-0.dll"
   File "libpng14-14.dll"
   File "zlib1.dll"
+
+  #MAIN
+  File "icon.ico"
+  File "remoton.exe"
+
+  CreateDirectory "$SMPROGRAMS\${PRODUCT_NAME}"
+  CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\${PRODUCT_NAME}.lnk" "$INSTDIR\remoton.exe" "" "$INSTDIR\icon.ico"
+
+
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "DisplayName" "${PRODUCT_NAME} - ${DESCRIPTION}"
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "QuietUninstallString" "$\"$INSTDIR\uninstall.exe$\" /S"
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "InstallLocation" "$\"$INSTDIR$\""
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "DisplayIcon" "$\"$INSTDIR\logo.ico$\""
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "Publisher" "$\"${PRODUCT_NAME}$\""
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "HelpLink" "$\"${HELPURL}$\""
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "URLUpdateInfo" "$\"${UPDATEURL}$\""
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "URLInfoAbout" "$\"${ABOUTURL}$\""
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "DisplayVersion" "$\"${VERSIONMAJOR}.${VERSIONMINOR}.${VERSIONBUILD}$\""
+	WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "VersionMajor" ${VERSIONMAJOR}
+	WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "VersionMinor" ${VERSIONMINOR}
+	# There is no option for modifying or repairing the install
+	WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "NoModify" 1
+	WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "NoRepair" 1
 SectionEnd
 
-Section
-  WriteUninstaller "$INSTDIR\uninstaller.exe"
-  File "icon.ico"
-  File "remoton-support-desktop.exe"
-  CreateShortCut "$SMPROGRAMS\remonto-support-desktop.lnk" "$INSTDIR\remoton-support-desktop.exe"
-SectionEnd
 
 Section "Uninstall"
+  Delete "$SMPROGRAMS\${PRODUCT_NAME}\${PRODUCT_NAME}.lnk"
+  RMDir "$SMPROGRAMS\${PRODUCT_NAME}"
+  
   Delete $INSTDIR\unistaller.exe
   !ifdef BUNDLE
     Delete $INSTDIR\xpra_setup.exe
     Delete $INSTDIR\gtk2_runtime.exe
   !endif
-  Delete $INSTDIR\remoton-support-desktop.exe
-  RMDir "$INSTDIR"
+  Delete $INSTDIR\remoton.exe
+  RMDir /r /REBOOTOK "$INSTDIR"
+  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 SectionEnd
