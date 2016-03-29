@@ -32,14 +32,11 @@ remoton-client-desktop:
 remoton-client-desktop-x86_64:
 	GOOS=linux GOARCH=amd64 go build -o $@ github.com/bit4bit/remoton/cmd/remoton-client-desktop
 
-
 remoton-client-desktop.deb: remoton-client-desktop
-	fpm -a 386 -s dir -t deb -n remoton-client-desktop -v $(PRODUCT_VERSION) $(GENERAL) $(GENERAL_CLIENT) $(PACKAGE_DESKTOP_DEPS) remoton-client-desktop=/usr/bin/remoton-client-desktop res/icon.png=/usr/share/icons/remoton-client.png res/remoton-client-desktop.desktop=/usr/share/applications/remoton-client-desktop.desktop
-	rm remoton-client-desktop
+	fpm -a i386 -s dir -t deb -n remoton-client-desktop -v $(PRODUCT_VERSION) $(GENERAL) $(GENERAL_CLIENT) $(PACKAGE_DESKTOP_DEPS) remoton-client-desktop=/usr/bin/remoton-client-desktop res/icon.png=/usr/share/icons/remoton-client.png res/remoton-client-desktop.desktop=/usr/share/applications/remoton-client-desktop.desktop
 
 remoton-client-desktop-x86_64.deb: remoton-client-desktop-x86_64
 	fpm -a amd64 -s dir -t deb -n remoton-client-desktop -v $(PRODUCT_VERSION) $(GENERAL) $(GENERAL_CLIENT) $(PACKAGE_DESKTOP_DEPS) remoton-client-desktop-x86_64=/usr/bin/remoton-client-desktop res/icon.png=/usr/share/icons/remoton-client.png res/remoton-client-desktop.desktop=/usr/share/applications/remoton-client-desktop.desktop
-	rm remoton-client-desktop-x86_64
 
 remoton-client-desktop-win32.exe: deps-win32
 	PKG_CONFIG_PATH=$(PWD)/vendor/windows/gtk+-2.0-win32/lib/pkgconfig CC=$(WIN32_CC) CGO_CFLAGS=$(pkg-config --cflags gtk+-2.0) CGO_LDFLAGS=$(pkg-config --libs gtk+-2.0) CGO_ENABLED=1 GOOS=windows GOARCH=386 go build -o $@ -ldflags -H=windowsgui github.com/bit4bit/remoton/cmd/remoton-client-desktop
@@ -117,13 +114,10 @@ remoton-support-desktop-x86_64:
 	GOOS=linux GOARCH=amd64 go build -o $@ github.com/bit4bit/remoton/cmd/remoton-support-desktop
 
 remoton-support-desktop.deb: remoton-support-desktop
-	fpm -s dir -t deb -n remoton-support-desktop -v $(PRODUCT_VERSION) $(GENERAL) $(GENERAL_SUPPORT) $(PACKAGE_DESKTOP_DEPS) remoton-support-desktop=/usr/bin/remoton-support-desktop res/icon.png=/usr/share/icons/remoton-support.png res/remoton-support-desktop.desktop=/usr/share/applications/remoton-support-desktop.desktop
-	rm remoton-support-desktop
+	fpm -a i386 -s dir -t deb -n remoton-support-desktop -v $(PRODUCT_VERSION) $(GENERAL) $(GENERAL_SUPPORT) $(PACKAGE_DESKTOP_DEPS) remoton-support-desktop=/usr/bin/remoton-support-desktop res/icon.png=/usr/share/icons/remoton-support.png res/remoton-support-desktop.desktop=/usr/share/applications/remoton-support-desktop.desktop
 
 remoton-support-desktop-x86_64.deb: remoton-support-desktop-x86_64
-	go build -o $@ github.com/bit4bit/remoton/cmd/remoton-support-desktop
-	fpm -s dir -t deb -n remoton-support-desktop -v $(PRODUCT_VERSION) $(GENERAL) $(GENERAL_SUPPORT) $(PACKAGE_DESKTOP_DEPS) $@=/usr/bin/remoton-support-desktop res/icon.png=/usr/share/icons/remoton-support.png res/remoton-support-desktop.desktop=/usr/share/applications/remoton-support-desktop.desktop
-	rm $@
+	fpm -a amd64 -s dir -t deb -n remoton-support-desktop -v $(PRODUCT_VERSION) $(GENERAL) $(GENERAL_SUPPORT) $(PACKAGE_DESKTOP_DEPS) remoton-support-desktop-x86_64=/usr/bin/remoton-support-desktop res/icon.png=/usr/share/icons/remoton-support.png res/remoton-support-desktop.desktop=/usr/share/applications/remoton-support-desktop.desktop
 
 remoton-support-desktop-win32.exe: deps-win32
 	PKG_CONFIG_PATH=$(PWD)/vendor/windows/gtk+-2.0-win32/lib/pkgconfig CC=$(WIN32_CC) CGO_CFLAGS=$(pkg-config --cflags gtk+-2.0) CGO_LDFLAGS=$(pkg-config --libs gtk+-2.0) CGO_ENABLED=1 GOOS=windows GOARCH=386 go build -o $@ -ldflags -H=windowsgui github.com/bit4bit/remoton/cmd/remoton-support-desktop
@@ -197,21 +191,21 @@ remoton-server:
 	GOOS=linux GOARCH=386 go build -o $@ github.com/bit4bit/remoton/cmd/remoton-server
 
 remoton-server-cert:
-	GOOS=linux GOARCH=386 go build -o $@-cert github.com/bit4bit/remoton/cmd/remoton-server-cert
+	GOOS=linux GOARCH=386 go build -o $@ github.com/bit4bit/remoton/cmd/remoton-server-cert
 
 remoton-server-cert-x86_64:
-	GOOS=linux GOARCH=amd64 go build -o $@-cert github.com/bit4bit/remoton/cmd/remoton-server-cert
+	GOOS=linux GOARCH=amd64 go build -o $@ github.com/bit4bit/remoton/cmd/remoton-server-cert
 
 remoton-server-x86_64:
 	GOOS=linux GOARCH=amd64 go build -o $@ github.com/bit4bit/remoton/cmd/remoton-server
 
 remoton-server.deb: remoton-server remoton-server-cert
-	fpm -s dir -t deb -n remoton-server -v $(PRODUCT_VERSION) $(GENERAL) $(GENERAL_SERVER) remoton-server=/usr/bin/remoton-server remoton-server-deb-cert=/usr/bin/remoton-server-cert
+	fpm -a i386 -s dir -t deb -n remoton-server -v $(PRODUCT_VERSION) $(GENERAL) $(GENERAL_SERVER) remoton-server=/usr/bin/remoton-server remoton-server-cert=/usr/bin/remoton-server-cert
 	rm remoton-server
 	rm remoton-server-cert
 
 remoton-server-x86_64.deb: remoton-server-x86_64 remoton-server-cert-x86_64
-	fpm -s dir -t deb -n remoton-server -v $(PRODUCT_VERSION) $(GENERAL) $(GENERAL_SERVER) remoton-server-x86_64=/usr/bin/remoton-server remoton-server-cert-x86_64=/usr/bin/remoton-server-cert
+	fpm -a amd64 -s dir -t deb -n remoton-server -v $(PRODUCT_VERSION) $(GENERAL) $(GENERAL_SERVER) remoton-server-x86_64=/usr/bin/remoton-server remoton-server-cert-x86_64=/usr/bin/remoton-server-cert
 	rm remoton-server-x86_64
 	rm remoton-server-cert-x86_64
 
@@ -235,7 +229,7 @@ all-win32: remoton-client-desktop-win32-runtime remoton-client-desktop-win32-set
 
 all-win64exp: remoton-client-desktop-win64exp-runtime remoton-client-desktop-win64exp-setup remoton-client-desktop-win64exp-bundle-setup remoton-support-desktop-win64exp-runtime remoton-support-desktop-win64exp-setup remoton-support-desktop-win64exp-bundle-setup remoton-server-win64exp-runtime
 
-all-gnu: remoton-client-desktop.deb remoton-support-desktop.deb remoton-server.deb
+all-gnu: remoton-client-desktop.deb remoton-support-desktop.deb remoton-server.deb remoton-client-desktop-x86_64.deb remoton-support-desktop-x86_64.deb remoton-server-x86_64.deb
 
 all: all-gnu all-win32 all-win64exp
 
