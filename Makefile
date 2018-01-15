@@ -1,5 +1,5 @@
-XPRA_VERSION = "0.16.3"
-XPRA_REVISION = "r12203"
+XPRA_VERSION = "0.17.5"
+XPRA_REVISION = "r13487"
 
 DESCRIPTION="Own remote desktop - platform"
 PRODUCT_VERSION="0.0.1"
@@ -29,9 +29,11 @@ deps-win64exp:
 
 remoton-client-desktop:
 	GOOS=linux GOARCH=386 CGO_ENABLED=1 go build -o $@ github.com/bit4bit/remoton/cmd/remoton-client-desktop
+	gzip -k $@
 
 remoton-client-desktop-x86_64:
 	GOOS=linux GOARCH=amd64 go build -o $@ github.com/bit4bit/remoton/cmd/remoton-client-desktop
+	gzip -k $@
 
 remoton-client-desktop.deb: remoton-client-desktop
 	fpm -a i386 -s dir -t deb -n remoton-client-desktop -v $(PRODUCT_VERSION) $(GENERAL) $(GENERAL_CLIENT) $(PACKAGE_DESKTOP_DEPS) remoton-client-desktop=/usr/bin/remoton-client-desktop res/icon.png=/usr/share/icons/remoton-client.png res/remoton-client-desktop.desktop=/usr/share/applications/remoton-client-desktop.desktop
@@ -110,9 +112,11 @@ remoton-client-desktop-win64exp-bundle-setup: deps-bundle deps-win64exp remoton-
 
 remoton-support-desktop:
 	GOOS=linux GOARCH=386 CGO_ENABLED=1 go build -o $@ github.com/bit4bit/remoton/cmd/remoton-support-desktop
+	gzip -k $@
 
 remoton-support-desktop-x86_64:
 	GOOS=linux GOARCH=amd64 go build -o $@ github.com/bit4bit/remoton/cmd/remoton-support-desktop
+	gzip -k $@
 
 remoton-support-desktop.deb: remoton-support-desktop
 	fpm -a i386 -s dir -t deb -n remoton-support-desktop -v $(PRODUCT_VERSION) $(GENERAL) $(GENERAL_SUPPORT) $(PACKAGE_DESKTOP_DEPS) remoton-support-desktop=/usr/bin/remoton-support-desktop res/icon.png=/usr/share/icons/remoton-support.png res/remoton-support-desktop.desktop=/usr/share/applications/remoton-support-desktop.desktop
@@ -190,15 +194,19 @@ remoton-support-desktop-win64exp-bundle-setup: deps-bundle remoton-support-deskt
 
 remoton-server:
 	GOOS=linux GOARCH=386 CGO_ENABLED=1 go build -o $@ github.com/bit4bit/remoton/cmd/remoton-server
+	gzip -k $@
 
 remoton-server-cert:
 	GOOS=linux GOARCH=386 go build -o $@ github.com/bit4bit/remoton/cmd/remoton-server-cert
+	gzip -k $@
 
 remoton-server-cert-x86_64:
 	GOOS=linux GOARCH=amd64 go build -o $@ github.com/bit4bit/remoton/cmd/remoton-server-cert
+	gzip -k $@
 
 remoton-server-x86_64:
 	GOOS=linux GOARCH=amd64 go build -o $@ github.com/bit4bit/remoton/cmd/remoton-server
+	gzip -k $@
 
 remoton-server.deb: remoton-server remoton-server-cert
 	fpm -a i386 -s dir -t deb -n remoton-server -v $(PRODUCT_VERSION) $(GENERAL) $(GENERAL_SERVER) remoton-server=/usr/bin/remoton-server remoton-server-cert=/usr/bin/remoton-server-cert
