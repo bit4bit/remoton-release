@@ -1,0 +1,8 @@
+[Desktop Entry]
+Categories=Network;Email;
+Comment=Remoton Client Desktop
+Exec=remoton-client-desktop
+Icon=remoton-client
+Name=remoton-client-desktop
+Terminal=false
+Type=Application

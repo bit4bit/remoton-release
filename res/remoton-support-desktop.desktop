@@ -1,0 +1,8 @@
+[Desktop Entry]
+Categories=Network;Email;
+Comment=Remoton Support Desktop
+Exec=remoton-support-desktop
+Icon=remoton-support
+Name=remoton-support-desktop
+Terminal=false
+Type=Application
