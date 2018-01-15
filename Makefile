@@ -10,8 +10,9 @@ GENERAL=--license "MIT" --vendor "bit4bit@riseup.net" -m "bit4bit@riseup.net"
 GENERAL_SUPPORT=--description "Support - Own remote desktop platform"
 GENERAL_CLIENT=--description "Client - Own remote desktop platform"
 GENERAL_SERVER=--description "Server - Own remote desktop platform"
+
 remoton-src:
-	go get github.com/bit4bit/remoton
+	go get github.com/bit4bit/remoton/...
 
 deps-bundle:
 	wget -c "https://www.xpra.org/dists/windows/Xpra_Setup_$(XPRA_VERSION)-$(XPRA_REVISION).exe" -O vendor/windows/xpra_setup.exe
@@ -27,7 +28,7 @@ deps-win64exp:
 	bash fix_pkg.sh windows/gtk+-2.0-win64exp
 
 remoton-client-desktop:
-	GOOS=linux GOARCH=386 go build -o $@ github.com/bit4bit/remoton/cmd/remoton-client-desktop
+	GOOS=linux GOARCH=386 CGO_ENABLED=1 go build -o $@ github.com/bit4bit/remoton/cmd/remoton-client-desktop
 
 remoton-client-desktop-x86_64:
 	GOOS=linux GOARCH=amd64 go build -o $@ github.com/bit4bit/remoton/cmd/remoton-client-desktop
@@ -56,7 +57,7 @@ remoton-client-desktop-win32-setup: remoton-client-desktop-win32.exe
 	cp scripts/installer-remoton-client-desktop.nsi installer-win32/
 	cp res/icon.ico installer-win32/
 	cp res/LICENSE installer-win32/
-	wine "C:\Program Files\NSIS\makensis.exe"  /DPRODUCT_VERSION=$(PRODUCT_VERSION) /DXPRA_VERSION=$(XPRA_VERSION) /DXPRA_REVISION=$(XPRA_REVISION) ./installer-win32/installer-remoton-client-desktop.nsi
+	makensis -DPRODUCT_VERSION=$(PRODUCT_VERSION) -DXPRA_VERSION=$(XPRA_VERSION) -DXPRA_REVISION=$(XPRA_REVISION) ./installer-win32/installer-remoton-client-desktop.nsi
 	cp installer-win32/installer.exe ./$@.exe
 	rm -rf installer-win32
 
@@ -68,7 +69,7 @@ remoton-client-desktop-win32-bundle-setup: deps-bundle deps-win32 remoton-client
 	cp scripts/installer-remoton-client-desktop.nsi installer-win32/
 	cp res/icon.ico installer-win32/
 	cp res/LICENSE	installer-win32/
-	wine "C:\Program Files\NSIS\makensis.exe"  /DBUNDLE="true" /DPRODUCT_VERSION=$(PRODUCT_VERSION) /DXPRA_VERSION=$(XPRA_VERSION) /DXPRA_REVISION=$(XPRA_REVISION) ./installer-win32/installer-remoton-client-desktop.nsi
+	makensis -DBUNDLE="true" -DPRODUCT_VERSION=$(PRODUCT_VERSION) -DXPRA_VERSION=$(XPRA_VERSION) -DXPRA_REVISION=$(XPRA_REVISION) ./installer-win32/installer-remoton-client-desktop.nsi
 	cp installer-win32/installer.exe ./$@.exe
 	rm -rf installer-win32
 
@@ -90,7 +91,7 @@ remoton-client-desktop-win64exp-setup: deps-win64exp remoton-client-desktop-win6
 	cp scripts/installer-remoton-client-desktop.nsi installer-win64exp/
 	cp res/icon.ico installer-win64exp/
 	cp res/LICENSE installer-win64exp/
-	wine "C:\Program Files\NSIS\makensis.exe" /DPRODUCT_VERSION=$(PRODUCT_VERSION) /DXPRA_VERSION=$(XPRA_VERSION) /DXPRA_REVISION=$(XPRA_REVISION) ./installer-win64exp/installer-remoton-client-desktop.nsi
+	makensis -DPRODUCT_VERSION=$(PRODUCT_VERSION) -DXPRA_VERSION=$(XPRA_VERSION) -DXPRA_REVISION=$(XPRA_REVISION) ./installer-win64exp/installer-remoton-client-desktop.nsi
 	cp installer-win64exp/installer.exe ./$@.exe
 	rm -rf installer-win64exp
 
@@ -102,13 +103,13 @@ remoton-client-desktop-win64exp-bundle-setup: deps-bundle deps-win64exp remoton-
 	cp scripts/installer-remoton-client-desktop.nsi installer-win64exp/
 	cp res/icon.ico installer-win64exp/
 	cp res/LICENSE	installer-win64exp/
-	wine "C:\Program Files\NSIS\makensis.exe" /DX64="true" /DBUNDLE="true" /DPRODUCT_VERSION=$(PRODUCT_VERSION) /DXPRA_VERSION=$(XPRA_VERSION) /DXPRA_REVISION=$(XPRA_REVISION) ./installer-win64exp/installer-remoton-client-desktop.nsi
+	makensis -DX64="true" -DBUNDLE="true" -DPRODUCT_VERSION=$(PRODUCT_VERSION) -DXPRA_VERSION=$(XPRA_VERSION) -DXPRA_REVISION=$(XPRA_REVISION) ./installer-win64exp/installer-remoton-client-desktop.nsi
 	cp installer-win64exp/installer.exe ./$@.exe
 	rm -rf installer-win64exp
 
 
 remoton-support-desktop:
-	GOOS=linux GOARCH=386 go build -o $@ github.com/bit4bit/remoton/cmd/remoton-support-desktop
+	GOOS=linux GOARCH=386 CGO_ENABLED=1 go build -o $@ github.com/bit4bit/remoton/cmd/remoton-support-desktop
 
 remoton-support-desktop-x86_64:
 	GOOS=linux GOARCH=amd64 go build -o $@ github.com/bit4bit/remoton/cmd/remoton-support-desktop
@@ -137,7 +138,7 @@ remoton-support-desktop-win32-setup: deps-win32 remoton-support-desktop-win32.ex
 	cp scripts/installer-remoton-support-desktop.nsi support-setup-win32/installer.nsi
 	cp res/icon.ico support-setup-win32/
 	cp res/LICENSE	support-setup-win32/
-	wine "C:\Program Files\NSIS\makensis.exe" /DPRODUCT_VERSION=$(PRODUCT_VERSION) /DXPRA_VERSION=$(XPRA_VERSION) /DXPRA_REVISION=$(XPRA_REVISION) ./support-setup-win32/installer.nsi
+	makensis -DPRODUCT_VERSION=$(PRODUCT_VERSION) -DXPRA_VERSION=$(XPRA_VERSION) -DXPRA_REVISION=$(XPRA_REVISION) ./support-setup-win32/installer.nsi
 	cp support-setup-win32/installer.exe ./$@.exe
 	rm -rf support-setup-win32
 
@@ -149,7 +150,7 @@ remoton-support-desktop-win32-bundle-setup: deps-bundle deps-win32 remoton-suppo
 	cp scripts/installer-remoton-support-desktop.nsi support-setup-win32/installer.nsi
 	cp res/icon.ico support-setup-win32/
 	cp res/LICENSE	support-setup-win32/
-	wine "C:\Program Files\NSIS\makensis.exe" /DBUNDLE="true" /DPRODUCT_VERSION=$(PRODUCT_VERSION) /DXPRA_VERSION=$(XPRA_VERSION) /DXPRA_REVISION=$(XPRA_REVISION) ./support-setup-win32/installer.nsi
+	makensis -DBUNDLE="true" -DPRODUCT_VERSION=$(PRODUCT_VERSION) -DXPRA_VERSION=$(XPRA_VERSION) -DXPRA_REVISION=$(XPRA_REVISION) ./support-setup-win32/installer.nsi
 	cp support-setup-win32/installer.exe ./$@.exe
 	rm -rf support-setup-win32
 
@@ -171,7 +172,7 @@ remoton-support-desktop-win64exp-setup: remoton-support-desktop-win64exp.exe
 	cp scripts/installer-remoton-support-desktop.nsi support-setup-win64exp/installer.nsi
 	cp res/icon.ico support-setup-win64exp/
 	cp res/LICENSE support-setup-win64exp/
-	wine "C:\Program Files\NSIS\makensis.exe" /DX64="true" /DPRODUCT_VERSION=$(PRODUCT_VERSION) /DXPRA_VERSION=$(XPRA_VERSION) /DXPRA_REVISION=$(XPRA_REVISION) ./support-setup-win64exp/installer.nsi
+	makensis -DX64="true" -DPRODUCT_VERSION=$(PRODUCT_VERSION) -DXPRA_VERSION=$(XPRA_VERSION) -DXPRA_REVISION=$(XPRA_REVISION) ./support-setup-win64exp/installer.nsi
 	cp support-setup-win64exp/installer.exe ./$@.exe
 	rm -rf support-setup-win64exp
 
@@ -183,12 +184,12 @@ remoton-support-desktop-win64exp-bundle-setup: deps-bundle remoton-support-deskt
 	cp res/icon.ico support-setup-win64exp/
 	cp res/LICENSE support-setup-win64exp/
 	cp scripts/installer-remoton-support-desktop.nsi support-setup-win64exp/installer.nsi
-	wine "C:\Program Files\NSIS\makensis.exe" /DBUNDLE="true" /DX64="true" /DPRODUCT_VERSION=$(PRODUCT_VERSION) /DXPRA_VERSION=$(XPRA_VERSION) /DXPRA_REVISION=$(XPRA_REVISION) ./support-setup-win64exp/installer.nsi
+	makensis -DBUNDLE="true" -DX64="true" -DPRODUCT_VERSION=$(PRODUCT_VERSION) -DXPRA_VERSION=$(XPRA_VERSION) -DXPRA_REVISION=$(XPRA_REVISION) ./support-setup-win64exp/installer.nsi
 	cp support-setup-win64exp/installer.exe ./$@.exe
 	rm -rf support-setup-win64exp
 
 remoton-server:
-	GOOS=linux GOARCH=386 go build -o $@ github.com/bit4bit/remoton/cmd/remoton-server
+	GOOS=linux GOARCH=386 CGO_ENABLED=1 go build -o $@ github.com/bit4bit/remoton/cmd/remoton-server
 
 remoton-server-cert:
 	GOOS=linux GOARCH=386 go build -o $@ github.com/bit4bit/remoton/cmd/remoton-server-cert
