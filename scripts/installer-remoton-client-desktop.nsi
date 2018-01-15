@@ -74,8 +74,8 @@ SectionEnd
 Section
   WriteUninstaller "$INSTDIR\uninstaller.exe"
   #GTK
-  File "freetype6.dll"
-  File "intl.dll"
+  File /nonfatal "freetype6.dll"
+  File /nonfatal "intl.dll"
   File "libasprintf-0.dll"
   File "libatk-1.0-0.dll"
   File "libcairo-2.dll"
@@ -84,7 +84,7 @@ Section
   File "libexpat-1.dll"
   File "libfontconfig-1.dll"
   File "libgailutil-18.dll"
-  File "libgcc_s_dw2-1.dll"
+  File /nonfatal "libgcc_s_dw2-1.dll"
   File "libgdk_pixbuf-2.0-0.dll"
   File "libgdk-win32-2.0-0.dll"
   File "libgio-2.0-0.dll"
