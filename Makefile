@@ -233,9 +233,9 @@ all-win64exp: remoton-client-desktop-win64exp-runtime remoton-client-desktop-win
 all-gnu: remoton-client-desktop.deb remoton-support-desktop.deb remoton-server.deb remoton-client-desktop-x86_64.deb remoton-support-desktop-x86_64.deb remoton-server-x86_64.deb
 
 all: all-gnu all-win32 all-win64exp
+	mv remoton-* build/
 
 clean:
 	go clean github.com/bit4bit/remoton/cmd/...
-	rm -f *.deb
-	rm -f *.exe
-	rm -f *.zip
+	rm -rf build/*
+
