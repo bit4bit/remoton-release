@@ -11,7 +11,15 @@ A crosscompile scripts for building GNU/Linux and M.Windows binaries/installer r
 ~~~bash
 $ git clone https://github.com/bit4bit/remoton-release.git
 $ cd remoton-release
-$ make
+$ make remoton-src
+$ make all
+~~~
+
+## Usage on Vagrant
+~~~bash
+$ cd /vagrant
+$ make remoton-src
+$ make all
 ~~~
 
 ## Requeriments
